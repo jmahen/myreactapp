@@ -1,0 +1,28 @@
+version: 2.1
+orbs:
+  node: circleci/node@1.1.6
+executors:
+  shared-executor:
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+    working_directory: ~/tmp
+    environment:
+      PACKAGE_NAME_PREFIX: "RDE_BUILD_"
+jobs:
+  Build_Application:
+    executor:
+      name: shared-executor
+    steps:
+      - checkout
+      - run:
+          name: Build Application
+          command: bash scripts/build.sh
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+workflows:
+  version: 2
+  Build-Test-Deploy:
+    jobs:
+      - Build_Application
